@@ -1,6 +1,7 @@
 package android.eservices.recyclerview;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -8,10 +9,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GameActionInterface{
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         setupRecyclerView();
 
 
+
+
     }
 
     private void setupRecyclerView() {
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         //DataGenerator data = new DataGenerator();
         items = DataGenerator.generateData();
-        gameAdapter = new GameAdapter(items);
+        gameAdapter = new GameAdapter(this,items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(gameAdapter);
         //Use data generator to get data to display.
@@ -47,6 +52,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void displaySnackBar(String message) {
         //TODO write a method that displays a snackbar in the coordinator layout with the "message" parameter as content.
+    }
+
+    @Override
+    public void onGameInfoClicked(String gameTitle) {
+    String msg = getString(R.string.game_info_clicked, gameTitle);
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, msg, Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    @Override
+    public void onGameClicked(String gameTitle) {
+        String msg = getString(R.string.game_clicked, gameTitle);
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, msg, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     //TODO create callback methods for item click

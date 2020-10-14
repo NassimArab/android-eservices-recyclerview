@@ -4,8 +4,10 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,10 +21,15 @@ import java.util.List;
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
     private List<GameViewModel> items;
-
+    private GameActionInterface gameActionInterface;
     public GameAdapter(List<GameViewModel> items) {
         this.items = items;
     }
+    public GameAdapter(GameActionInterface gameActionInterface,List<GameViewModel> items) {
+        this.gameActionInterface=gameActionInterface;
+        this.items = items;
+    }
+
 
 
     @Override
@@ -30,7 +37,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_recyclerview, parent, false);
         // Create and return the ViewHolder
-        return new GameViewHolder(view);
+        return new GameViewHolder(view,gameActionInterface);
     }
 
 
@@ -49,20 +56,42 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         private TextView gameTitle;
         private TextView gameDescription;
         private ImageView gameImage;
+        private ImageButton gameInfoButton;
+        private ImageButton gameImageButton;
+        private GameViewModel gameViewModel;
+        private GameActionInterface gameActionInterface;
 
-        public GameViewHolder(@NonNull View itemView) {
+
+        public GameViewHolder(@NonNull final View itemView, final GameActionInterface gameActionInterface) {
             super(itemView);
+            this.gameActionInterface = gameActionInterface;
             gameTitle = itemView.findViewById(R.id.title_textview);
             gameDescription = itemView.findViewById(R.id.description_textview);
             gameImage = itemView.findViewById(R.id.icon_imageview);
+            gameInfoButton = itemView.findViewById(R.id.info_button);
+            gameImageButton = itemView.findViewById(R.id.game_button);
+
+            gameInfoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gameActionInterface.onGameInfoClicked(gameViewModel.getTitle());
+                }
+            });
+
+            gameImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gameActionInterface.onGameClicked(gameViewModel.getTitle());
+                }
+            });
+
         }
 
         public void bind(GameViewModel gameViewModel){
+            this.gameViewModel = gameViewModel;
             gameTitle.setText(gameViewModel.getTitle());
             gameDescription.setText(gameViewModel.getDescription());
-            //gameImage.setImageURI(Uri.parse(gameViewModel.getImageUrl()));
 
-            //gameImage.setImageResource(R.drawable.borderlands);
             Glide.with(itemView)
                     .load(gameViewModel.getImageUrl())
                     .centerCrop()
