@@ -5,7 +5,11 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,7 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private Toolbar toolbar;
     private CoordinatorLayout coordinatorLayout;
-
+    private GameAdapter gameAdapter;
+    private List<GameViewModel> items = new ArrayList<GameViewModel>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +35,13 @@ public class MainActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         //TODO Bind recyclerview and set its adapter.
 
+        recyclerView = findViewById(R.id.my_recyclerview);
+
+        //DataGenerator data = new DataGenerator();
+        items = DataGenerator.generateData();
+        gameAdapter = new GameAdapter(items);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(gameAdapter);
         //Use data generator to get data to display.
     }
 
